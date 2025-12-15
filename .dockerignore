@@ -1,0 +1,54 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment
+.env
+.env.local
+*.env
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+
+# Logs
+*.log
+
+# Test
+.pytest_cache/
+
+# Git
+.git/
+.gitignore
+
+# Node modules (for Front-End)
+node_modules/
+**/node_modules/
+
+# Exclude other project directories
+Front-End/
+Back-End/
+Database/
+Insight_Project_doc/
+
+# Documents
+*.pdf
+*.aux
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.md
+README.md
+
+# Keep only essential files for Docker build
+!Python/**
