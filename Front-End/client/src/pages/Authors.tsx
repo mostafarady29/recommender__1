@@ -44,7 +44,7 @@ export default function Authors() {
       const searchParam = appliedSearch ? `&search=${encodeURIComponent(appliedSearch)}` : '';
 
       const response = await fetch(
-        `http://localhost:5000/api/authors?page=${page}&limit=12${searchParam}`,
+        `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/authors?page=${page}&limit=12${searchParam}`,
         { headers }
       );
 
@@ -74,7 +74,7 @@ export default function Authors() {
     const token = localStorage.getItem('token');
     if (token && trimmed) {
       try {
-        await fetch('http://localhost:5000/api/interactions/search', {
+        await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/interactions/search`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -103,7 +103,7 @@ export default function Authors() {
 
   const getAuthorImageUrl = (authorId: number, hasPicture: number) => {
     if (hasPicture) {
-      return `http://localhost:5000/api/authors/${authorId}/image`;
+      return `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/authors/${authorId}/image`;
     }
     return "/images/avatar-placeholder.png";
   };

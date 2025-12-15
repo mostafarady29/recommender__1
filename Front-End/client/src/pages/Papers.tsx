@@ -26,7 +26,7 @@ interface PaginationData {
   pages: number;
 }
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api`;
 const CACHE_DURATION = 5 * 60 * 1000;
 
 const cache = new Map<string, { data: any; timestamp: number }>();

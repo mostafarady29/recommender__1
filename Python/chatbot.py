@@ -73,7 +73,7 @@ def ask_llm(question, context):
     url = "https://openrouter.ai/api/v1/chat/completions"
     
     headers = {
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer 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",
         "Content-Type": "application/json"
     }
     

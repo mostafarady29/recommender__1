@@ -31,7 +31,7 @@ interface ChatSession {
 
 const ChatMessage = ({ msg, index }: { msg: Message, index: number }) => {
   const isUser = msg.role === 'user';
-  
+
   return (
     <div
       key={msg.id}
@@ -41,14 +41,14 @@ const ChatMessage = ({ msg, index }: { msg: Message, index: number }) => {
       <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-lg ${isUser ? 'bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700' : 'bg-gradient-to-br from-purple-500 via-indigo-600 to-purple-700'}`}>
         {isUser ? <User className="h-4 w-4 text-white" /> : <Bot className="h-4 w-4 text-white" />}
       </div>
-      
+
       <div className={`max-w-[75%] flex flex-col gap-1 ${isUser ? 'items-end' : 'items-start'}`}>
         <div className={`px-4 py-3 rounded-2xl shadow-sm ${isUser ? 'bg-blue-500 text-white rounded-br-sm' : 'bg-card border border-border rounded-tl-sm'}`}>
           <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">
             {msg.content}
           </p>
         </div>
-        
+
         <div className="flex items-center gap-2 px-2">
           <span className="text-[10px] text-muted-foreground">
             {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -65,11 +65,11 @@ const ChatMessage = ({ msg, index }: { msg: Message, index: number }) => {
   );
 };
 
-const AdvancedFileUpload = ({ 
-  onFileSelect, 
-  isUploading, 
-  uploadedFileName 
-}: { 
+const AdvancedFileUpload = ({
+  onFileSelect,
+  isUploading,
+  uploadedFileName
+}: {
   onFileSelect: (file: File) => void;
   isUploading: boolean;
   uploadedFileName: string | null;
@@ -110,11 +110,10 @@ const AdvancedFileUpload = ({
   return (
     <div className="space-y-4">
       <div
-        className={`relative border-2 border-dashed rounded-xl p-8 transition-all ${
-          dragActive 
-            ? 'border-primary bg-primary/5' 
+        className={`relative border-2 border-dashed rounded-xl p-8 transition-all ${dragActive
+            ? 'border-primary bg-primary/5'
             : 'border-muted-foreground/25 hover:border-primary/50'
-        } ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
+          } ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
@@ -127,20 +126,20 @@ const AdvancedFileUpload = ({
           onChange={handleChange}
           className="hidden"
         />
-        
+
         <div className="flex flex-col items-center justify-center gap-3 text-center">
           <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
             <Upload className="h-8 w-8 text-primary" />
           </div>
-          
+
           <div>
             <h3 className="font-semibold text-lg mb-1">Upload PDF Document</h3>
             <p className="text-sm text-muted-foreground mb-3">
               Drag and drop your PDF here, or click to browse
             </p>
-            <Button 
+            <Button
               type="button"
-              variant="outline" 
+              variant="outline"
               size="sm"
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploading}
@@ -187,14 +186,14 @@ export default function AIAssistant() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadedPdfName, setUploadedPdfName] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
-  
-  const { 
-    chatSessions, 
-    currentSessionId, 
-    messages, 
-    setMessages, 
-    startNewChat, 
-    loadChatSession, 
+
+  const {
+    chatSessions,
+    currentSessionId,
+    messages,
+    setMessages,
+    startNewChat,
+    loadChatSession,
     updateCurrentSession,
     deleteSession
   } = useChatSessions();
@@ -202,7 +201,7 @@ export default function AIAssistant() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
-  const API_BASE = 'http://localhost:8001';
+  const API_BASE = import.meta.env.VITE_CHATBOT_URL || 'http://localhost:8001';
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -240,14 +239,14 @@ export default function AIAssistant() {
 
       if (response.ok) {
         setUploadedPdfName(file.name);
-        
+
         const systemMessage: Message = {
           id: Date.now().toString(),
           role: 'assistant',
           content: `Great! I've successfully processed "${file.name}". The document has been split into ${data.num_chunks} chunks for analysis. You can now ask me questions about this PDF!`,
           timestamp: new Date()
         };
-        
+
         const newMessages = [...messages, systemMessage];
         setMessages(newMessages);
         updateCurrentSession(newMessages);
@@ -268,19 +267,19 @@ export default function AIAssistant() {
 
   const handleSendMessage = async () => {
     if (!input.trim() || isLoading) return;
-    
+
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
       content: input.trim(),
       timestamp: new Date()
     };
-    
+
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setInput("");
     setIsLoading(true);
-    
+
     let sessionTitle = chatSessions.find(s => s.id === currentSessionId)?.title;
     if (sessionTitle === 'New Chat' || !sessionTitle) {
       sessionTitle = userMessage.content;
@@ -296,9 +295,9 @@ export default function AIAssistant() {
           question: userMessage.content
         }),
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok) {
         const assistantMessage: Message = {
           id: (Date.now() + 1).toString(),
@@ -307,7 +306,7 @@ export default function AIAssistant() {
           timestamp: new Date(),
           sources_used: data.sources_used > 0 ? data.sources_used : undefined
         };
-        
+
         const finalMessages = [...newMessages, assistantMessage];
         setMessages(finalMessages);
         updateCurrentSession(finalMessages, sessionTitle);
@@ -369,18 +368,18 @@ export default function AIAssistant() {
               </div>
             </div>
 
-            <Button 
-              className="w-full justify-start gap-2 h-11 bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg transition-all" 
+            <Button
+              className="w-full justify-start gap-2 h-11 bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg transition-all"
               onClick={() => startNewChat(true)}
             >
               <Plus className="h-4 w-4" />
               New Chat
             </Button>
-            
+
             <Dialog open={showUploadDialog} onOpenChange={setShowUploadDialog}>
               <DialogTrigger asChild>
-                <Button 
-                  className="w-full justify-start gap-2 h-11 shadow-sm" 
+                <Button
+                  className="w-full justify-start gap-2 h-11 shadow-sm"
                   variant={uploadedPdfName ? "secondary" : "outline"}
                 >
                   {uploadedPdfName ? (
@@ -409,7 +408,7 @@ export default function AIAssistant() {
                     Upload a research paper or document to enable AI-powered PDF analysis and Q&A.
                   </DialogDescription>
                 </DialogHeader>
-                <AdvancedFileUpload 
+                <AdvancedFileUpload
                   onFileSelect={handleFileSelect}
                   isUploading={isUploading}
                   uploadedFileName={uploadedPdfName}
@@ -423,7 +422,7 @@ export default function AIAssistant() {
               </DialogContent>
             </Dialog>
           </div>
-          
+
           <ScrollArea className="flex-1">
             <div className="p-3 space-y-2">
               <div className="flex items-center justify-between px-2 mb-3">
@@ -431,7 +430,7 @@ export default function AIAssistant() {
                   Recent Chats ({chatSessions.length})
                 </div>
               </div>
-              
+
               {chatSessions.length === 0 ? (
                 <div className="text-center py-16 px-4">
                   <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-3">
@@ -444,13 +443,12 @@ export default function AIAssistant() {
                 <div className="space-y-1">
                   {chatSessions.map((session) => (
                     <div key={session.id} className="group relative">
-                      <Button 
-                        variant={currentSessionId === session.id ? "secondary" : "ghost"} 
-                        className={`w-full justify-start gap-3 h-auto py-3 px-3 font-normal text-left transition-all ${
-                          currentSessionId === session.id 
-                            ? 'bg-secondary shadow-sm' 
+                      <Button
+                        variant={currentSessionId === session.id ? "secondary" : "ghost"}
+                        className={`w-full justify-start gap-3 h-auto py-3 px-3 font-normal text-left transition-all ${currentSessionId === session.id
+                            ? 'bg-secondary shadow-sm'
                             : 'hover:bg-secondary/50'
-                        }`}
+                          }`}
                         onClick={() => loadChatSession(session)}
                       >
                         <MessageSquare className="h-4 w-4 shrink-0 text-muted-foreground" />
@@ -460,15 +458,14 @@ export default function AIAssistant() {
                             {session.messages.length} messages • {new Date(session.updatedAt).toLocaleDateString()}
                           </p>
                         </div>
-                        <ChevronRight className={`h-4 w-4 shrink-0 transition-opacity ${
-                          currentSessionId === session.id ? 'opacity-100' : 'opacity-0'
-                        } group-hover:opacity-0`} />
+                        <ChevronRight className={`h-4 w-4 shrink-0 transition-opacity ${currentSessionId === session.id ? 'opacity-100' : 'opacity-0'
+                          } group-hover:opacity-0`} />
                       </Button>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
-                          <Button 
-                            size="icon" 
-                            variant="ghost" 
+                          <Button
+                            size="icon"
+                            variant="ghost"
                             className="h-8 w-8 absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/10"
                           >
                             <Trash2 className="h-3.5 w-3.5 text-destructive" />
@@ -533,7 +530,7 @@ export default function AIAssistant() {
                 {messages.map((msg, index) => (
                   <ChatMessage key={msg.id} msg={msg} index={index} />
                 ))}
-                
+
                 {isLoading && (
                   <div className="flex gap-3 animate-in fade-in">
                     <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-gradient-to-br from-purple-500 to-indigo-600 shadow-lg">
@@ -568,8 +565,8 @@ export default function AIAssistant() {
                   className="border-0 h-12 px-4 focus-visible:ring-0 bg-transparent"
                   disabled={isLoading}
                 />
-                <Button 
-                  size="icon" 
+                <Button
+                  size="icon"
                   className="h-10 w-10 rounded-xl mr-1 shrink-0 shadow-md"
                   onClick={handleSendMessage}
                   disabled={isLoading || !input.trim()}

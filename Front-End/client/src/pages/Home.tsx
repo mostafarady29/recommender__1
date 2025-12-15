@@ -25,7 +25,7 @@ export default function Home() {
   useEffect(() => {
     const fetchStatistics = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/statistics/overview');
+        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/statistics/overview`);
         const data = await response.json();
         if (data.success) {
           setStatistics({
@@ -52,7 +52,7 @@ export default function Home() {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        fetch('http://localhost:5000/api/interactions/search', {
+        fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/interactions/search`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

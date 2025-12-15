@@ -52,7 +52,7 @@ export default function AuthorProfile() {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`http://localhost:5000/api/authors/${params?.id}`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/authors/${params?.id}`);
         if (!response.ok) {
           if (response.status === 404) {
             throw new Error('Author not found');
@@ -97,7 +97,7 @@ export default function AuthorProfile() {
 
   const getAuthorImageUrl = (authorId: number, hasPicture: number) => {
     if (hasPicture) {
-      return `http://localhost:5000/api/authors/${authorId}/image`;
+      return `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/authors/${authorId}/image`;
     }
     return "/images/avatar-placeholder.png";
   };
@@ -108,8 +108,8 @@ export default function AuthorProfile() {
         <div className="container">
           <div className="flex flex-col md:flex-row gap-8 items-start">
             <Avatar className="h-32 w-32 md:h-40 md:w-40 rounded-none border-2 border-background shadow-lg">
-              <AvatarImage 
-                src={getAuthorImageUrl(Author_ID, Has_Picture)} 
+              <AvatarImage
+                src={getAuthorImageUrl(Author_ID, Has_Picture)}
                 alt={name}
                 className="object-cover"
               />
@@ -117,12 +117,12 @@ export default function AuthorProfile() {
                 {name.split(' ').map(n => n[0]).join('')}
               </AvatarFallback>
             </Avatar>
-           
+
             <div className="flex-1 space-y-4">
               <div>
                 <h1 className="text-4xl font-bold tracking-tighter mb-2">{name}</h1>
               </div>
-             
+
               <div className="flex flex-wrap gap-6 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <MapPin className="h-4 w-4" />
@@ -133,7 +133,7 @@ export default function AuthorProfile() {
                   {Paper_Count} Publications
                 </div>
               </div>
-             
+
               <div className="flex gap-4 pt-2">
               </div>
             </div>

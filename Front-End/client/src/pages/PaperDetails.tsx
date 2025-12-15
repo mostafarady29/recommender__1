@@ -9,7 +9,7 @@ import { Download, Star, Calendar, User, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import NotFound from "./NotFound";
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api`;
 
 interface Author {
   Author_ID: number;
@@ -51,7 +51,7 @@ export default function PaperDetails() {
   const [submittingReview, setSubmittingReview] = useState(false);
   const [downloadingPaper, setDownloadingPaper] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  
+
   const isLoggedIn = !!localStorage.getItem('token');
   const token = localStorage.getItem('token');
 
@@ -105,7 +105,7 @@ export default function PaperDetails() {
         if (data.data.path) {
           window.open(data.data.path, '_blank');
         }
-        
+
         // Refresh paper data to update download count (silently)
         fetchPaperDetails(paper.Paper_ID.toString());
       } else {
@@ -149,7 +149,7 @@ export default function PaperDetails() {
         toast.success(data.message);
         setDialogOpen(false);
         setRating(0);
-        
+
         // Refresh paper data to show new review
         fetchPaperDetails(paper.Paper_ID.toString());
       } else {
@@ -195,11 +195,11 @@ export default function PaperDetails() {
                 {formatDate(paper.Publication_Date)}
               </span>
             </div>
-            
+
             <h1 className="text-3xl md:text-5xl font-bold tracking-tighter leading-tight mb-6">
               {paper.Title}
             </h1>
-            
+
             <div className="flex flex-wrap gap-6 items-center text-sm mb-8">
               <div className="flex items-center gap-2">
                 <User className="h-4 w-4 text-primary" />
@@ -210,7 +210,7 @@ export default function PaperDetails() {
               {paper.Average_Rating > 0 && (
                 <div className="flex items-center gap-1 text-amber-500 font-bold">
                   <Star className="h-4 w-4 fill-current" />
-                  {paper.Average_Rating.toFixed(1)} 
+                  {paper.Average_Rating.toFixed(1)}
                   <span className="text-muted-foreground font-normal">
                     ({paper.Review_Count} {paper.Review_Count === 1 ? 'review' : 'reviews'})
                   </span>
@@ -221,10 +221,10 @@ export default function PaperDetails() {
                 {paper.Download_Count.toLocaleString()} downloads
               </div>
             </div>
-            
+
             <div className="flex flex-wrap gap-4">
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 className="rounded-none gap-2 h-12 px-8"
                 onClick={handleDownload}
                 disabled={downloadingPaper || !isLoggedIn}
@@ -241,7 +241,7 @@ export default function PaperDetails() {
                   </>
                 )}
               </Button>
-              
+
               {isLoggedIn ? (
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                   <DialogTrigger asChild>
@@ -257,7 +257,7 @@ export default function PaperDetails() {
                     <div className="space-y-4 py-4">
                       <div className="flex gap-2 justify-center mb-4">
                         {[1, 2, 3, 4, 5].map((star) => (
-                          <button 
+                          <button
                             key={star}
                             onClick={() => setRating(star)}
                             className={`p-1 transition-colors ${rating >= star ? 'text-amber-500' : 'text-muted-foreground'}`}
@@ -285,9 +285,9 @@ export default function PaperDetails() {
                   </DialogContent>
                 </Dialog>
               ) : (
-                <Button 
-                  variant="outline" 
-                  size="lg" 
+                <Button
+                  variant="outline"
+                  size="lg"
                   className="rounded-none gap-2 h-12"
                   onClick={() => toast.info('Please login to rate papers')}
                 >

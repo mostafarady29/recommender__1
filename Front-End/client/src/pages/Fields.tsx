@@ -27,7 +27,7 @@ export default function Fields() {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch(`http://localhost:5000/api/fields?page=${page}&limit=12`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/fields?page=${page}&limit=12`);
       if (!response.ok) throw new Error('Failed to fetch fields');
       const result = await response.json();
       if (result.success) {

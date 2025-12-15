@@ -11,14 +11,14 @@ import { toast } from "sonner";
 import { Shield, Bell, Moon, Trash2 } from "lucide-react";
 import { useLocation } from "wouter";
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api`;
 
 export default function Settings() {
   const [notifications, setNotifications] = useState(true);
   const { theme, toggleTheme, switchable } = useTheme();
   const darkMode = theme === "dark";
   const [, setLocation] = useLocation();
-  
+
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -28,25 +28,25 @@ export default function Settings() {
 
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!currentPassword || !newPassword || !confirmPassword) {
       toast.error("All password fields are required");
       return;
     }
-    
+
     if (newPassword !== confirmPassword) {
       toast.error("New passwords do not match");
       return;
     }
-    
+
     if (newPassword.length < 6) {
       toast.error("New password must be at least 6 characters");
       return;
     }
-    
+
     setIsChangingPassword(true);
     const token = localStorage.getItem("token");
-    
+
     try {
       const response = await fetch(`${API_BASE}/users/change-password`, {
         method: 'PUT',
@@ -59,9 +59,9 @@ export default function Settings() {
           newPassword,
         }),
       });
-      
+
       const data = await response.json();
-      
+
       if (data.success) {
         toast.success("Password updated successfully");
         setCurrentPassword("");
@@ -81,7 +81,7 @@ export default function Settings() {
   const handleDeleteAccount = async () => {
     setIsDeletingAccount(true);
     const token = localStorage.getItem("token");
-    
+
     try {
       const response = await fetch(`${API_BASE}/users/account`, {
         method: 'DELETE',
@@ -89,9 +89,9 @@ export default function Settings() {
           'Authorization': `Bearer ${token}`,
         },
       });
-      
+
       const data = await response.json();
-      
+
       if (data.success) {
         toast.success("Account deleted successfully");
         localStorage.removeItem("token");
@@ -160,9 +160,9 @@ export default function Settings() {
               <form onSubmit={handlePasswordChange} className="space-y-4">
                 <div className="grid gap-2">
                   <Label htmlFor="current-password">Current Password</Label>
-                  <Input 
-                    id="current-password" 
-                    type="password" 
+                  <Input
+                    id="current-password"
+                    type="password"
                     className="rounded-none"
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
@@ -170,9 +170,9 @@ export default function Settings() {
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="new-password">New Password</Label>
-                  <Input 
-                    id="new-password" 
-                    type="password" 
+                  <Input
+                    id="new-password"
+                    type="password"
                     className="rounded-none"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
@@ -180,16 +180,16 @@ export default function Settings() {
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="confirm-password">Confirm New Password</Label>
-                  <Input 
-                    id="confirm-password" 
-                    type="password" 
+                  <Input
+                    id="confirm-password"
+                    type="password"
                     className="rounded-none"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                   />
                 </div>
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   className="rounded-none w-full md:w-auto"
                   disabled={isChangingPassword}
                 >
@@ -223,16 +223,16 @@ export default function Settings() {
                     </DialogDescription>
                   </DialogHeader>
                   <DialogFooter>
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       className="rounded-none"
                       onClick={() => setDeleteDialogOpen(false)}
                     >
                       Cancel
                     </Button>
-                    <Button 
-                      variant="destructive" 
-                      className="rounded-none" 
+                    <Button
+                      variant="destructive"
+                      className="rounded-none"
                       onClick={handleDeleteAccount}
                       disabled={isDeletingAccount}
                     >

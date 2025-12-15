@@ -49,20 +49,20 @@ export default function FieldDetails() {
     try {
       setLoading(true);
       setError(null);
-      
-      const response = await fetch(`http://localhost:5000/api/fields/${fieldId}?page=${pageNum}&limit=10`);
-      
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/fields/${fieldId}?page=${pageNum}&limit=10`);
+
       if (response.status === 404) {
         setNotFound(true);
         return;
       }
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch field details');
       }
 
       const result = await response.json();
-      
+
       if (result.success) {
         setField(result.data);
         setNotFound(false);
@@ -160,12 +160,12 @@ export default function FieldDetails() {
                         <span>{paper.Author_Count} {paper.Author_Count === 1 ? 'Author' : 'Authors'}</span>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center gap-6 w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 border-border pt-4 md:pt-0">
                       <div className="flex flex-col items-center min-w-[60px]">
                         <span className="font-bold flex items-center gap-1">
                           <Download className="h-4 w-4" />
-                          {paper.Download_Count >= 1000 
+                          {paper.Download_Count >= 1000
                             ? `${(paper.Download_Count / 1000).toFixed(1)}k`
                             : paper.Download_Count}
                         </span>

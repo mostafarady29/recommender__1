@@ -10,7 +10,7 @@ import { useState, useEffect, useRef } from "react";
 import { Camera, Star, Download, Calendar, FileText } from "lucide-react";
 import { Link } from "wouter";
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api`;
 
 interface Review {
   reviewId: number;
@@ -264,7 +264,7 @@ export default function Profile() {
     <MainLayout>
       <div className="max-w-6xl mx-auto p-4">
         <h1 className="text-3xl font-bold mb-6">User Profile</h1>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -375,9 +375,8 @@ export default function Profile() {
                               {Array.from({ length: 5 }).map((_, i) => (
                                 <Star
                                   key={i}
-                                  className={`h-3 w-3 ${
-                                    i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
-                                  }`}
+                                  className={`h-3 w-3 ${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
+                                    }`}
                                 />
                               ))}
                             </div>
