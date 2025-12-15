@@ -22,8 +22,10 @@ COPY requirements.txt .
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
-COPY . .
+# Copy only necessary application code
+COPY *.py .
+COPY requirements.txt .
+COPY Procfile .
 
 # Expose port (Railway will override with $PORT)
 EXPOSE 8000

@@ -32,3 +32,16 @@ env/
 # Deployment (not needed in container)
 railway.json
 nixpacks.toml
+
+# Exclude other services and large folders
+../Front-End/
+../Back-End/
+../Database/
+../Insight_Project_doc/
+../.git/
+../node_modules/
+*.pdf
+*.aux
+*.fdb_latexmk
+*.fls
+*.synctex.gz
